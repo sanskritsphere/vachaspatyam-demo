@@ -15,17 +15,19 @@
 अयं कोशः संस्कृतभाषाया अध्ययन–अनुसन्धानयोः अत्यन्तं विश्वसनीयः आधारग्रन्थः।</p>
     </header>
     <hr>
-    <button id="toggleFilters">पृथक्करणोपायान् दर्शयतु / निगूहतु</button>
-    
+   
     <div id="searchContainer">
-        <input type="text" id="search" placeholder="मृग्यतां शब्दस्तद्व्याख्यां वा">
+        <input type="text" id="search" placeholder="मृग्यतां शब्दस्तद्व्याख्या वा">
         <div class="search-options">
             <label><input type="radio" name="searchMode" value="wordOnly" checked>शब्दो मृग्यः</label>
             <label><input type="radio" name="searchMode" value="meaningOnly">व्याख्या मृग्या</label>
             <label><input type="radio" name="searchMode" value="both">उभयं मृग्यम्</label>
         </div>
     </div>
-    
+    <div class="toggle-btn" id="toggleFilters">
+    Filters
+    <span class="arrow">▼</span>
+ </div>
     <div class="filters" id="filtersPanel">
         <div class="filter-group" id="startingLetterGroup">
             <label>आद्यक्षरानुक्रमेण पृथक्करणम्</label>
@@ -61,6 +63,7 @@
     <div id="results"></div>
 </div>
     <script>
+        
         let dictionary = [];
         let allTags = new Set();
         let tagValues = {}; // { tag: Set of values }
@@ -185,38 +188,53 @@
             return text;
         }
 
-        function renderEntries(entries) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-            if (entries.length === 0) {
-                resultsDiv.innerHTML = '<p class="no-results">कश्चन शब्दो न लब्धः। कृपया मृग्यपदं परिवर्तयतु।</p>';
-                return;
-            }
+        function renderEntries(entries, query) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
 
-            entries.forEach(entry => {
-                const div = document.createElement('div');
-                div.className = 'entry';
-                div.innerHTML = `<h3>${entry.V ? entry.V[0] : 'अज्ञातः'}</h3>`;
+    if (entries.length === 0) {
+        resultsDiv.innerHTML =
+            '<p class="no-results">कश्चन शब्दो न लब्धः। कृपया मृग्यपदं परिवर्तयतु।</p>';
+        return;
+    }
 
-                const tagsDiv = document.createElement('div');
+    entries.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'entry';
 
-                allTags.forEach(tag => {
-                    const checkbox = document.getElementById('show' + tag);
-                    if (checkbox && checkbox.checked && entry[tag]) {
-                        entry[tag].forEach(value => {
-                            if (tag === 'WM' || tag === 'EXP') {
-                                tagsDiv.innerHTML += `<div class="content"><span class="tag-name">${tag}:</span> ${value}</div>`;
-                            } else {
-                                tagsDiv.innerHTML += `<span class="tag"><span class="tag-name">${tag}:</span> ${value}</span>`;
-                            }
-                        });
+        const headWord = entry.V ? highlightText(entry.V[0], query) : 'अज्ञातः';
+        div.innerHTML = `<h3>${headWord}</h3>`;
+
+        const tagsDiv = document.createElement('div');
+
+        allTags.forEach(tag => {
+            const checkbox = document.getElementById('show' + tag);
+            if (checkbox && checkbox.checked && entry[tag]) {
+                entry[tag].forEach(value => {
+                    const highlightedValue = highlightText(value, query);
+
+                    if (tag === 'WM' || tag === 'EXP') {
+                        tagsDiv.innerHTML += `
+                            <div class="content">
+                                <span class="tag-name">${tag}:</span>
+                                ${highlightedValue}
+                            </div>`;
+                    } else {
+                        tagsDiv.innerHTML += `
+                            <span class="tag">
+                                <span class="tag-name">${tag}:</span>
+                                ${highlightedValue}
+                            </span>`;
                     }
                 });
+            }
+        });
 
-                div.appendChild(tagsDiv);
-                resultsDiv.appendChild(div);
-            });
-        }
+        div.appendChild(tagsDiv);
+        resultsDiv.appendChild(div);
+    });
+}
+
 
         function filterEntries() {
             let filtered = dictionary;
@@ -258,14 +276,37 @@
                 }
             });
 
-            renderEntries(filtered);
+            renderEntries(filtered, query);
         }
 
+        // for highlight
+            function highlightText(text, query) {
+                if (!query) return text;
+                const regex = new RegExp(`(${query})`, 'gi');
+                return text.replace(regex, '<mark>$1</mark>');
+            }
+
         // टॉगल बटन
-        document.getElementById('toggleFilters').addEventListener('click', () => {
-            const panel = document.getElementById('filtersPanel');
-            panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'grid' : 'none';
+    document.getElementById('toggleFilters').addEventListener('click', () => {
+    const panel = document.getElementById('filtersPanel');
+    const btn = document.getElementById('toggleFilters');
+    btn.classList.toggle('active');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+
+    if (panel.classList.contains('show')) {
+        panel.classList.remove('show');
+        setTimeout(() => {
+            panel.style.display = 'none';
+        }, 600); // CSS transition duration के बराबर
+    } else {
+        panel.style.display = 'grid';
+        // थोड़ा सा delay ताकि display apply हो जाए
+        requestAnimationFrame(() => {
+            panel.classList.add('show');
         });
+    }
+});
+
 
     function generateTagVisibility() {
     const container = document.getElementById('tagVisibility');
@@ -310,6 +351,10 @@
         document.getElementById('startingLetterFilter').addEventListener('change', filterEntries);
         document.getElementById('gcFilter').addEventListener('change', filterEntries);
         document.getElementById('filtersPanel').addEventListener('change', filterEntries); // सभी सिलेक्ट और चेकबॉक्स
+
+    
+    
+    
     </script>
 </body>
 </html>
