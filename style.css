@@ -180,5 +180,9 @@
             #search {
                 width: 92%;
             }
+            .container{
+                margin: 0%;
+                width: 100px;
+            }
         }
     
