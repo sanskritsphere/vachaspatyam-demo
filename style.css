@@ -14,7 +14,7 @@
             border-radius: 20px;
         }
         header{
-            display: flex;
+            display: block;
             justify-content: center;
             align-items: center;
             gap: 20px;
