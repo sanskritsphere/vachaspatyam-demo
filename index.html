@@ -185,7 +185,7 @@
             const container = document.getElementById('tagFilters');
             container.innerHTML = '';
             [...allTags].sort().forEach(tag => {
-                if (tag === 'V') return; // V के लिए पहले से आदि अक्षर फ़िल्टर है
+                if (tag === 'V'||tag==='WM'||tag ==='CT') return; // V के लिए पहले से आदि अक्षर फ़िल्टर है
 
                 const group = document.createElement('div');
                 group.className = 'filter-group';
