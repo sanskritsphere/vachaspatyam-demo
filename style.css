@@ -6,7 +6,7 @@
             direction: ltr;
         }
         .container{
-            width: 100%;
+            width: 95%;
             max-width: 700px;
             margin: auto;
             background-color: #fff3e3;
@@ -29,8 +29,12 @@
             border-radius: 15px;
         }
        header .small{
-            font-weight: 700;
-
+            font-size: smaller;
+            border-left: 5px solid #f1ce9c;
+            border-radius: 100px ;
+            border-right: 5px solid #f1ce9c;
+            border-bottom: 1px solid #f1ce9c;
+            text-align: center;
         }
         #toggleFilters {
             display: block;
