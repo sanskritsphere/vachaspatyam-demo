@@ -4,6 +4,8 @@
             margin: 20px;
             background-color: #f9f9f9;
             direction: ltr;
+            margin: 0;
+            padding: 0;
         }
         .container{
             width: 95%;
