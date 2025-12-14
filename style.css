@@ -222,3 +222,164 @@
     mark {
     background-color: #ffff01;
 }
+
+.pagination button {
+    background-color: #ffe792;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.pagination button:hover {
+    background-color: #f1ce9c;
+}
+
+/* Divine Sanskrit Loader - अत्यंत आकर्षक */
+.divine-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #fff3e3 0%, #f1ce9c 50%, #ffe792 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+    font-family: 'Sanskrit Text', serif;
+}
+
+.divine-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.mandala-outer {
+    width: 220px;
+    height: 220px;
+    position: relative;
+    animation: gentleRotate 30s linear infinite;
+}
+
+.mandala-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff9e0 0%, #ffd700 40%, #b8860b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.8),
+                inset 0 0 40px rgba(255, 255, 255, 0.6);
+    position: relative;
+    overflow: hidden;
+}
+
+.om-symbol {
+    font-size: 80px;
+    color: #b8860b;
+    font-weight: bold;
+    text-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
+    animation: omPulse 3s ease-in-out infinite alternate;
+    z-index: 3;
+}
+
+.glow-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top-color: #ffd700;
+    border-right-color: #ffaa00;
+    border-radius: 50%;
+    animation: spinGlow 4s linear infinite;
+    box-shadow: 0 0 30px #ffd700;
+}
+
+.glow-ring.delay1 {
+    animation-delay: 1s;
+    border-top-color: #ff6b00;
+    border-left-color: #ffaa00;
+}
+
+.glow-ring.delay2 {
+    animation-delay: 2s;
+    border-top-color: #b8860b;
+    border-bottom-color: #ffd700;
+}
+
+.loader-text {
+    margin-top: 40px;
+    text-align: center;
+    color: #8b4513;
+}
+
+.loader-text span {
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 10px rgba(255, 165, 0, 0.6);
+    animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+.shloka {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #a0522d;
+    font-style: italic;
+    opacity: 0.9;
+    animation: fadeInOut 5s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes gentleRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spinGlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes omPulse {
+    from { 
+        transform: scale(1);
+        text-shadow: 0 0 20px #ffd700;
+    }
+    to { 
+        transform: scale(1.15);
+        text-shadow: 0 0 50px #ffd700, 0 0 80px #ffaa00;
+    }
+}
+
+@keyframes textGlow {
+    from { text-shadow: 0 2px 10px rgba(255, 165, 0, 0.4); }
+    to { text-shadow: 0 4px 20px rgba(255, 165, 0, 0.9); }
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* मोबाइल के लिए */
+@media (max-width: 768px) {
+    .mandala-outer {
+        width: 180px;
+        height: 180px;
+    }
+    .om-symbol {
+        font-size: 65px;
+    }
+    .loader-text span {
+        font-size: 24px;
+    }
+    .shloka {
+        font-size: 16px;
+    }
+}

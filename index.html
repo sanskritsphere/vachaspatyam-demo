@@ -59,19 +59,41 @@
             </div>
         </div>
     </div>
-    
+    <!-- Custom Divine Sanskrit Loader -->
+<div id="divineLoader" class="divine-loader">
+    <div class="mandala-outer">
+        <div class="mandala-inner">
+            <div class="om-symbol">ॐ</div>
+            <div class="glow-ring"></div>
+            <div class="glow-ring delay1"></div>
+            <div class="glow-ring delay2"></div>
+        </div>
+    </div>
+    <div class="loader-text">
+        <span>वाचस्पत्यम्</span>
+        <div class="shloka">तर्कवाचस्पति पण्डित तारानाथ भट्टाचार्य</div>
+    </div>
+</div>
     <div id="results"></div>
 </div>
     <script>
         
         let dictionary = [];
         let allTags = new Set();
+        let filteredEntries = [];
         let tagValues = {}; // { tag: Set of values }
         let startingLetters = new Set();
         let gcValues = new Set();
         let currentPage = 1;
-        const itemsPerPage = 25;
+        const itemsPerPage = 5;
         // XML फ़ाइल लोड करना
+
+        // पेज लोड होते ही लोडर दिखाएँ
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('divineLoader');
+            if (loader) loader.classList.remove('hidden'); // सुरक्षा के लिए
+        });
+
         fetch('vachaspatyam.xml')
             .then(response => response.text())
             .then(xmlText => {
@@ -107,7 +129,18 @@
                 generateDynamicFilters();
                 generateTagVisibility();
                 generateTagFilters(); // नया फ़ीचर
-                renderEntries(dictionary);
+                // renderEntries(dictionary);
+                filteredEntries = dictionary;
+                currentPage = 1;
+                renderPaginatedEntries('');
+                // ===== लोडर हटाएँ (डेटा दिखने के बाद) =====
+        const loader = document.getElementById('divineLoader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 1000); // transition के बाद पूरी तरह हटाएँ
+        }
             })
             .catch(err => {
                 document.getElementById('results').innerHTML = 
@@ -188,17 +221,22 @@
             return text;
         }
 
-        function renderEntries(entries, query) {
+function renderPaginatedEntries(query) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = '';
 
-    if (entries.length === 0) {
-        resultsDiv.innerHTML =
-            '<p class="no-results">कश्चन शब्दो न लब्धः। कृपया मृग्यपदं परिवर्तयतु।</p>';
+    if (filteredEntries.length === 0) {
+        resultsDiv.innerHTML = '<p class="no-results">कश्चन शब्दो न लब्धः। कृपया मृग्यपदं परिवर्तयतु।</p>';
         return;
     }
 
-    entries.forEach(entry => {
+    // Pagination calculate
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredEntries.length);
+    const pageEntries = filteredEntries.slice(startIndex, endIndex);
+
+    // Entries render करना
+    pageEntries.forEach(entry => {
         const div = document.createElement('div');
         div.className = 'entry';
 
@@ -233,51 +271,100 @@
         div.appendChild(tagsDiv);
         resultsDiv.appendChild(div);
     });
+
+    // Pagination controls जोड़ना
+    const paginationDiv = document.createElement('div');
+    paginationDiv.className = 'pagination';
+    paginationDiv.style.textAlign = 'center';
+    paginationDiv.style.marginTop = '30px';
+
+    const totalPages = Math.ceil(filteredEntries.length / itemsPerPage);
+
+    // Previous button
+    if (currentPage > 1) {
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = '←';
+        prevBtn.style.padding = '10px 20px';
+        prevBtn.style.margin = '0 10px';
+        prevBtn.style.fontSize = '16px';
+        prevBtn.onclick = () => {
+            currentPage--;
+            renderPaginatedEntries(query);
+            window.scrollTo(0, 0);
+        };
+        paginationDiv.appendChild(prevBtn);
+    }
+
+    // Page info
+    const info = document.createElement('span');
+    info.textContent = `पृष्ठम् ${currentPage} / ${totalPages} (आहत्य ${filteredEntries.length} शब्दाः)`;
+    info.style.fontSize = '18px';
+    info.style.margin = '0 20px';
+    paginationDiv.appendChild(info);
+
+    // Next button
+    if (currentPage < totalPages) {
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = '→';
+        nextBtn.style.padding = '10px 20px';
+        nextBtn.style.margin = '0 10px';
+        nextBtn.style.fontSize = '16px';
+        nextBtn.onclick = () => {
+            currentPage++;
+            renderPaginatedEntries(query);
+            window.scrollTo(0, 0);
+        };
+        paginationDiv.appendChild(nextBtn);
+    }
+
+    resultsDiv.appendChild(paginationDiv);
 }
 
+function filterEntries() {
+    let filtered = dictionary;
 
-        function filterEntries() {
-            let filtered = dictionary;
+    const query = document.getElementById('search').value.trim();
+    const searchMode = document.querySelector('input[name="searchMode"]:checked').value;
 
-            const query = document.getElementById('search').value.trim();
-            const searchMode = document.querySelector('input[name="searchMode"]:checked').value;
-
-            if (query) {
-                if (searchMode === 'wordOnly') {
-                    filtered = filtered.filter(entry => entry.V && entry.V.some(v => v.includes(query)));
-                } else if (searchMode === 'meaningOnly') {
-                    filtered = filtered.filter(entry => getMeaningText(entry).includes(query));
-                } else {
-                    filtered = filtered.filter(entry => 
-                        (entry.V && entry.V.some(v => v.includes(query))) || 
-                        getMeaningText(entry).includes(query)
-                    );
-                }
-            }
-
-            const startingLetter = document.getElementById('startingLetterFilter').value;
-            if (startingLetter) {
-                filtered = filtered.filter(entry => entry.V && entry.V[0].startsWith(startingLetter));
-            }
-
-            const gc = document.getElementById('gcFilter').value;
-            if (gc) {
-                filtered = filtered.filter(entry => entry.GC && entry.GC.includes(gc));
-            }
-
-            // सभी टैग फ़िल्टर्स
-            allTags.forEach(tag => {
-                const select = document.getElementById('filter_' + tag);
-                if (select && select.value) {
-                    const filterValue = select.value;
-                    filtered = filtered.filter(entry => 
-                        entry[tag] && entry[tag].includes(filterValue)
-                    );
-                }
-            });
-
-            renderEntries(filtered, query);
+    if (query) {
+        if (searchMode === 'wordOnly') {
+            filtered = filtered.filter(entry => entry.V && entry.V.some(v => v.includes(query)));
+        } else if (searchMode === 'meaningOnly') {
+            filtered = filtered.filter(entry => getMeaningText(entry).includes(query));
+        } else {
+            filtered = filtered.filter(entry => 
+                (entry.V && entry.V.some(v => v.includes(query))) || 
+                getMeaningText(entry).includes(query)
+            );
         }
+    }
+
+    const startingLetter = document.getElementById('startingLetterFilter').value;
+    if (startingLetter) {
+        filtered = filtered.filter(entry => entry.V && entry.V[0].startsWith(startingLetter));
+    }
+
+    const gc = document.getElementById('gcFilter').value;
+    if (gc) {
+        filtered = filtered.filter(entry => entry.GC && entry.GC.includes(gc));
+    }
+
+    // सभी टैग फ़िल्टर्स
+    allTags.forEach(tag => {
+        const select = document.getElementById('filter_' + tag);
+        if (select && select.value) {
+            const filterValue = select.value;
+            filtered = filtered.filter(entry => 
+                entry[tag] && entry[tag].includes(filterValue)
+            );
+        }
+    });
+
+    // नया: filtered list को global में save करें
+    filteredEntries = filtered;
+    currentPage = 1;  // नया filter लगने पर पहला page दिखाएँ
+    renderPaginatedEntries(query);
+}
 
         // for highlight
             function highlightText(text, query) {
