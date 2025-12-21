@@ -17,32 +17,8 @@
             align-items: center;
             justify-content: center;
         }
-        header{
-            display: block;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-       header h1 {
-            text-align: center;
-            color: #333;
-            font-size: 36px;
-            background-color: #f1ce9c;
-            padding: 10px;
-            border-radius: 15px;
-            margin-bottom: 0;
-        }
-       header .small{
-            margin-top: 0;
-            padding: 5px;
-            font-size: smaller;
-            border-left: 5px solid #f1ce9c;
-            border-radius: 100px ;
-            border-right: 5px solid #f1ce9c;
-            border-bottom: 1px solid #f1ce9c;
-            text-align: center;
-        }
+        
+       
         #toggleFilters {
             display: block;
             margin: 20px auto;
@@ -380,5 +356,229 @@
     }
     .shloka {
         font-size: 16px;
+    }
+}
+
+/* ================== */
+
+/* मौजूदा स्टाइल्स वही रहें, नीचे नए/बदले हुए जोड़े हैं */
+
+.container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 320px;
+    background: #fff3e3;
+    padding: 20px;
+    border-right: 4px solid #f1ce9c;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background: #fff3e3;
+}
+
+.alphabet-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.alphabet-nav button {
+    padding: 8px 12px;
+    background: #ffe792;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.alphabet-nav button:hover {
+    background: #f1ce9c;
+}
+
+.word-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.word-list li {
+    padding: 12px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1ce9c;
+    font-size: 18px;
+}
+
+.word-list li:hover,
+.word-list li.active {
+    background: #f1ce9c;
+}
+
+/* डेस्कटॉप पर फ़िल्टर हमेशा दिखें */
+@media (min-width: 769px) {
+    #filtersPanel {
+        display: grid !important;
+        max-height: none;
+        opacity: 1;
+        overflow: visible;
+    }
+    #toggleFilters {
+        display: none;
+    }
+    .filters {
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+        border: none;
+    }
+}
+
+/* मोबाइल पर साइडबार छिपा */
+@media (max-width: 768px) {
+    .layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        display: none;
+    }
+    .container {
+        padding: 10px;
+    }
+}
+
+/* बाकी मौजूदा स्टाइल्स अपरिवर्तित */
+
+/* अकॉर्डियन स्टाइल्स */
+.accordion-item {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.accordion-header {
+    width: 100%;
+    text-align: left;
+    background: #fff2c1 round;
+    color: #000;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion-header:hover {
+    background: #ffeace;
+}
+
+.accordion-header .arrow {
+    transition: transform 0.3s ease;
+}
+
+.accordion-header.active .arrow {
+    transform: rotate(180deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease, padding 0.6s ease;
+    background: #fff9f9;
+    border-radius: 0 0 8px 8px;
+    margin-top: 5px;
+}
+
+.accordion-content.open {
+    max-height: 2000px; /* बहुत बड़ा रखा ताकि सब कंटेंट फिट हो */
+    padding: 15px;
+    border: 1px solid #f1ce9c;
+}
+
+/* Fixed Header */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-image: url("img.png");
+    background-attachment: fixed;
+    background-position: 1px 511px;
+    opacity: 1;
+    background-color: #fff3e3;
+    padding: 20px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-bottom: 4px solid #d38922;
+    display: flex;
+    align-items: center;
+}
+
+.fixed-header h1 {
+    margin: 0;
+    font-size: 46px;
+    color: #333;
+    background-color: #f1ce9ca6;
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    max-height: 100%;
+}
+
+.fixed-header .small {
+    margin: 15px 0 0;
+    padding: 10px;
+    font-size: 20px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff7e7bb;
+     align-items: center;
+     border-radius: 20px;
+     
+}
+
+/* Header की ऊँचाई के बराबर गैप */
+.layout {
+    margin-top: 120px; /* header की कुल ऊँचाई (padding + content) के अनुसार adjust करें – यहाँ ~180px ठीक है */
+}
+
+/* साइडबार को header के नीचे से शुरू करना */
+.sidebar {
+    top: 120px !important;                 /* sticky top को header height के बराबर */
+    height: calc(100vh - 120px) !important; /* बची हुई ऊँचाई */
+}
+
+/* मोबाइल पर adjustment */
+@media (max-width: 768px) {
+    .fixed-header {
+        padding: 15px;
+    }
+    .fixed-header h1 {
+        font-size: 28px;
+    }
+    .layout {
+        margin-top: 120px; /* मोबाइल पर थोड़ा कम */
     }
 }
